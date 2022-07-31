@@ -1,5 +1,7 @@
 package manhanlou.unit.MySqlDqmo;
 
+import manhanlou.common.User;
+
 import javax.xml.transform.Result;
 import java.sql.*;
 
@@ -13,8 +15,9 @@ public class MySql_staff_login {
         static final String USER = "root";
         static final String PASS = "jpy150790";
 
-        public static void main(String[] args) {
+        public  boolean mysqlSelect(String SelectSql, User usr) {
             Connection conn = null;
+            //可以向数据库发送 sql语句 的 Statement 对象
             Statement stmt = null;
             try{
                 // 注册 JDBC 驱动
@@ -27,15 +30,21 @@ public class MySql_staff_login {
                 // 执行查询
                 System.out.println("实例化对象...");
                 stmt = conn.createStatement();
-                String sql;
-                sql = "SELECT * FROM staff";
-                ResultSet rs = stmt.executeQuery(sql);
 
-                // 展开结果集数据库
-                while(rs.next()){
-                    // 通过字段检索
-                    String id = rs.getString("staff_name");
-                    System.out.println(id);
+                ResultSet rs = null;
+                if (SelectSql == SqlProgram.select_staff) {
+                    String sql = SelectSql;
+                    rs = stmt.executeQuery(sql);
+
+                    // 展开结果集数据库
+                    while(rs.next()){
+                        // 通过字段检索
+                        String id = rs.getString("staff_name");
+                        String pass = rs.getString("staff_passwd");
+                        if(id == usr.getUsername() && pass == usr.getPassed()){
+                            return true;
+                        }
+                    }
                 }
                 // 完成后关闭
                 rs.close();
@@ -60,6 +69,7 @@ public class MySql_staff_login {
                 }
             }
             System.out.println("Goodbye!");
+            return false;
         }
 
 }

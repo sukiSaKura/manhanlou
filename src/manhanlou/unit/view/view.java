@@ -1,33 +1,46 @@
 package manhanlou.unit.view;
 
 import manhanlou.common.User;
+import manhanlou.unit.MySqlDqmo.SqlProgram;
+import manhanlou.unit.service.check;
 import org.testng.annotations.Test;
 
 import java.util.Scanner;
 
 public class view {
+    check check = new check();
     public static void main(String[] args) {
         new view().view_();
     }
     @Test
     public void view_(){
+
         System.out.println("===========满汉楼===========");
         System.out.println("1、登录满汉楼");
         System.out.println("2、退出满汉楼");
         System.out.println("请输入你的选择:");
         Scanner scanner = new Scanner(System.in);
-        String key = scanner.nextLine();
-        switch(key){
-            case "1" :
-                System.out.print("请输入员工号:");
-                String user = scanner.nextLine();
-                System.out.println("请输入密 码:");
-                String passwd = scanner.nextLine();
-                User user1 = new User(user,passwd);
-                break;
-            case "2":
-                System.out.println("==========退出成功==========");
-                break;
+        boolean flag = true;
+        while (flag) {
+            String key = scanner.nextLine();
+            switch(key){
+                case "1" :
+                    System.out.print("请输入员工号:");
+                    String user = scanner.nextLine();
+                    System.out.println("请输入密 码:");
+                    String passwd = scanner.nextLine();
+                    User user1 = new User(user,passwd);
+                    if(check.checkLogin(user1, SqlProgram.select_staff)){
+                        System.out.println("login succeed");
+                    }else{
+                        System.out.println("登陆失败(密码可能输入错误请重新输入)");
+                    }
+                    break;
+                case "2":
+                    System.out.println("==========退出成功==========");
+                    flag = false;
+                    break;
+            }
         }
     }
 }
